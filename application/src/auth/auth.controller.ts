@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,6 +27,19 @@ export class AuthController {
         password: { type: 'string', example: 'changeme' },
       },
       required: ['username', 'password'],
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful login',
+    content: {
+      'application/json': {
+        example: [
+          {
+            access_token: "token_string",
+          },
+        ],
+      },
     },
   })
   signIn(@Body() signInDto: Record<string, any>) {

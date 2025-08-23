@@ -16,5 +16,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+  mail:
+    container_name: mail
+    image: schickling/mailcatcher
+    ports:
+      - '1080:1080'
+      - '1025:1025'
 volumes:
   db_data:

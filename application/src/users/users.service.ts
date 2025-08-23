@@ -15,8 +15,13 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(username: string): Promise<User | null> {
+  findOneByUsername(username: string): Promise<User | null> {
     return this.usersRepository.findOne({where: { username: username },});
+  }
+
+
+  findOneById(id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ id: id });
   }
 
   async remove(id: number): Promise<void> {

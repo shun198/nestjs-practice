@@ -8,7 +8,8 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
+  // https://stackoverflow.com/questions/50360101/how-to-exclude-entity-field-from-returned-by-controller-json-nestjs-typeorm
+  @Column({ select: false })
   password: string;
 
   @Column({ default: true })

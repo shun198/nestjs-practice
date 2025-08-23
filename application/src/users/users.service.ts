@@ -11,17 +11,17 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
-  findOneByUsername(username: string): Promise<User | null> {
-    return this.usersRepository.findOne({where: { username: username },});
+  async findOneByUsername(username: string): Promise<User | null> {
+    return await this.usersRepository.findOne({where: { username: username },});
   }
 
 
-  findOneById(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id: id });
+  async findOneById(id: number): Promise<User> | null {
+    return await this.usersRepository.findOneBy({ id: id })
   }
 
   async remove(id: number): Promise<void> {

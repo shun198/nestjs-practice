@@ -1,20 +1,21 @@
 {
-    // IntelliSense を使用して利用可能な属性を学べます。
-    // 既存の属性の説明をホバーして表示します。
-    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Program",
-            "skipFiles": [
-                "<node_internals>/**"
+            "name": "NestJS Debug (Hot Reload)",
+            // use npx to run ts-node-dev
+            "runtimeExecutable": "npx",
+            // Use `npx ts-node-dev` to enable hot reloading
+            "runtimeArgs": [
+                "ts-node-dev",
+                "--respawn",
+                "--inspect",
+                "src/main.ts"
             ],
-            "program": "${workspaceFolder}/application/src/main.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
+            "cwd": "${workspaceFolder}/application",
+            "console": "integratedTerminal"
         }
     ]
 }

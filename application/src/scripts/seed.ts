@@ -3,7 +3,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { DataSource } from 'typeorm';
-import { User } from '../entity/user.entity';
+import { Role, User } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt';
 
 async function bootstrap() {
@@ -20,16 +20,19 @@ async function bootstrap() {
         username: 'john',
         password: hashedPassword,
         isActive: true,
+        role: Role.Admin,
       },
       {
         username: 'maria',
         password: hashedPassword,
         isActive: true,
+        role: Role.General,
       },
       {
         username: 'chris',
         password: hashedPassword,
         isActive: false,
+        role: Role.General,
       },
     ];
 

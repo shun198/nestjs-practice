@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -44,15 +43,9 @@ export class AuthController {
       },
     },
   })
+  // https://zenn.dev/uttk/articles/9095a28be1bf5d
   async login(@Request() req) {
     return this.authService.login(req.user);
-  }
-
-  @UseGuards(LocalAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @Post('logout')
-  async logout(@Request() req) {
-    return req.logout();
   }
 
   @ApiResponse({

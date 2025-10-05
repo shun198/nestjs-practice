@@ -16,6 +16,9 @@ import { ApiTags, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { Role } from '../entity/user.entity';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../guards/roles.decorator';
 
 @ApiTags('users')
 @Controller('api/users')
@@ -76,9 +79,10 @@ export class UsersController {
     return user
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
+  @Roles(Role.Admin)
   @ApiBody({
     type: CreateUserDto,
     description: 'ユーザー作成用のリクエストボディ',
@@ -87,6 +91,7 @@ export class UsersController {
         value: {
           username: 'wada',
           password: 'changeme',
+          role: Role.Admin,
         },
       },
     },
@@ -100,6 +105,7 @@ export class UsersController {
           id: 4,
           username: 'wada',
           password: '$2b$10$UvFrY2ifg7hrWLIY8udaPe3HgApQAjquTlgJTPkt.1h8YMJATncsu',
+          role: Role.Admin,
           isActive: false,
         },
       },

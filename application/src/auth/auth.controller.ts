@@ -46,6 +46,22 @@ export class AuthController {
     return this.authService.signIn(signInDto.username, signInDto.password);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get user profile',
+    content: {
+      'application/json': {
+        example: [
+          {
+            username: "john",
+            sub: 1,
+            "iat": 1700000000,
+            "exp": 1700003600
+          },
+        ],
+      },
+    },
+  })
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

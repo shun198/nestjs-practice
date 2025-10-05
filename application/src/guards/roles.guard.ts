@@ -1,3 +1,4 @@
+// https://docs.nestjs.com/security/authorization
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
@@ -15,7 +16,20 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) {
       return true;
     }
+
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    if (!user || !user.role) {
+        return false;
+    }
+
+    if (user.role === Role.Admin) {
+      // Admin は Admin と General の両方を許可
+      return requiredRoles.some((role) => role === Role.Admin || role === Role.General);
+    } else if (user.role === Role.General) {
+      // General は General のみ許可
+      return requiredRoles.includes(Role.General);
+    }
+
+    return false;
   }
 }

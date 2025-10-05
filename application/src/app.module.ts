@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
-import { LoggerMiddleware } from '../middleware/logger.middleware';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
   imports: [

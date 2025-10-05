@@ -10,16 +10,19 @@ import {
   Param,
   NotFoundException,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('users')
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get('')
   @ApiResponse({
@@ -42,6 +45,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   @ApiResponse({
@@ -72,6 +76,7 @@ export class UsersController {
     return user
   }
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
   @ApiBody({
@@ -108,6 +113,7 @@ export class UsersController {
     return await this.usersService.createUser(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   @ApiParam({

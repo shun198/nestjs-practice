@@ -6,17 +6,19 @@ import {
   HttpStatus,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public } from './decorators/public.decorator';
 import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Public()
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiBody({
@@ -24,7 +26,7 @@ export class AuthController {
       type: 'object',
       properties: {
         username: { type: 'string', example: 'john' },
-        password: { type: 'string', example: 'changeme' },
+        password: { type: 'string', example: 'test' },
       },
       required: ['username', 'password'],
     },
@@ -42,8 +44,15 @@ export class AuthController {
       },
     },
   })
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  async login(@Request() req) {
+    return this.authService.login(req.user);
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Request() req) {
+    return req.logout();
   }
 
   @ApiResponse({
@@ -54,14 +63,13 @@ export class AuthController {
         example: [
           {
             username: "john",
-            sub: 1,
-            iat: 1700000000,
-            exp: 1700003600
+            userId: 1,
           },
         ],
       },
     },
   })
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

@@ -27,7 +27,7 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     // https://docs.nestjs.com/security/encryption-and-hashing
-    const salt = await bcrypt.genSalt();
+    const salt = await bcrypt.genSaltSync();
     const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
     const user = this.usersRepository.create({
       ...createUserDto,

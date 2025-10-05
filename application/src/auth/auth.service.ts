@@ -17,6 +17,7 @@ export class AuthService {
     const user = await this.usersService.findOneByUsername(username);
     // ユーザーが存在しない場合でも、bcrypt.compareを実行
     // タイミング攻撃を防ぐため
+    // Null合体演算子 (Nullish Coalescing Operator) を使用して、user?.passwordがnullまたはundefinedの場合にdummyHashを使用するようにしている
     const isPasswordValid = await bcrypt.compare(
       pass,
       user?.password ?? this.dummyHash

@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { DataSource } from 'typeorm';
 import { User } from '../entity/user.entity';
+import * as bcrypt from 'bcrypt';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -11,22 +12,23 @@ async function bootstrap() {
 
   try {
     const userRepository = dataSource.getRepository(User);
-
+    const salt = await bcrypt.genSaltSync();
+    const hashedPassword = await bcrypt.hash('test', salt);
     // サンプルユーザーデータ
     const users = [
       {
         username: 'john',
-        password: 'changeme',
+        password: hashedPassword,
         isActive: true,
       },
       {
         username: 'maria',
-        password: 'guess',
+        password: hashedPassword,
         isActive: true,
       },
       {
         username: 'chris',
-        password: 'secret',
+        password: hashedPassword,
         isActive: false,
       },
     ];

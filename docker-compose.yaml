@@ -1,11 +1,11 @@
 services:
   db:
-    container_name: postgres
+    container_name: db
     image: postgres:latest
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -20,7 +20,7 @@ services:
     container_name: mail
     image: schickling/mailcatcher
     ports:
-      - '1080:1080'
-      - '1025:1025'
+      - "1080:1080"
+      - "1025:1025"
 volumes:
   db_data:

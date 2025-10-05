@@ -55,8 +55,8 @@ export class AuthController {
           {
             username: "john",
             sub: 1,
-            "iat": 1700000000,
-            "exp": 1700003600
+            iat: 1700000000,
+            exp: 1700003600
           },
         ],
       },

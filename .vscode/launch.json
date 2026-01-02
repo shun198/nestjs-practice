@@ -4,18 +4,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "NestJS Debug (Hot Reload)",
-            // use npx to run ts-node-dev
-            "runtimeExecutable": "npx",
-            // Use `npx ts-node-dev` to enable hot reloading
+            "name": "NestJS Debug",
+            "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "ts-node-dev",
-                "--respawn",
-                "--inspect",
-                "src/main.ts"
+                "run",
+                "start:debug",
             ],
+            "env": {
+                "NODE_ENV": "development"
+            },
             "cwd": "${workspaceFolder}/application",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "restart": true,
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }

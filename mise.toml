@@ -1,2 +1,11 @@
 [tools]
-node = '22.16.0'
+node = '24.11.1'
+
+[env]
+_.file = [".env"]
+
+[tasks.up]
+run = "docker compose up"
+
+[tasks.down]
+run = "docker compose down"

@@ -1,7 +1,7 @@
 services:
   db:
     container_name: db
-    image: postgres:latest
+    image: postgres:17
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -22,5 +22,11 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+  redis:
+    container_name: redis
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
 volumes:
   db_data:

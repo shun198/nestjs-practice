@@ -28,5 +28,50 @@ services:
     ports:
       - "6379:6379"
       - "8001:8001"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.2
+    container_name: elasticsearch
+    environment:
+      - node.name=es01
+      - cluster.name=es-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "${ES_PORT:-9200}:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: ${MEM_LIMIT:-1g}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 | grep -q 'cluster_name'"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.2.2
+    container_name: kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+    mem_limit: ${MEM_LIMIT:-1g}
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302'"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 volumes:
   db_data:
+  esdata:
+  kibanadata:

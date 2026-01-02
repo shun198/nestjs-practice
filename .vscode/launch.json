@@ -10,9 +10,7 @@
                 "run",
                 "start:debug",
             ],
-            "env": {
-                "NODE_ENV": "development"
-            },
+            "envFile": "${workspaceFolder}/.env",
             "cwd": "${workspaceFolder}/application",
             "console": "integratedTerminal",
             "restart": true,

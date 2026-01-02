@@ -7,6 +7,7 @@ import { User } from './entity/user.entity';
 import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     }),
     AuthModule,
     UsersModule,
-    EmailModule
+    EmailModule,
+    RedisModule,
   ],
   controllers: [],
   providers: [EmailService],

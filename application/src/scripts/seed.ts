@@ -18,18 +18,21 @@ async function bootstrap() {
     const users = [
       {
         username: 'john',
+        email: 'john@example.com',
         password: hashedPassword,
         isActive: true,
         role: Role.Admin,
       },
       {
         username: 'maria',
+        email: 'maria@example.com',
         password: hashedPassword,
         isActive: true,
         role: Role.General,
       },
       {
         username: 'chris',
+        email: 'chris@example.com',
         password: hashedPassword,
         isActive: false,
         role: Role.General,

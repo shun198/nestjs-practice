@@ -37,6 +37,7 @@ export class UsersController {
           {
             id: 1,
             username: 'john',
+            email: 'john@example.com',
             password: 'changeme',
             isActive: true,
           },
@@ -59,6 +60,7 @@ export class UsersController {
         example: {
             id: 1,
             username: 'john',
+            email: 'john@example.com',
             password: 'changeme',
             isActive: true,
           },
@@ -90,6 +92,7 @@ export class UsersController {
       user: {
         value: {
           username: 'wada',
+          email: 'wada@example.com',
           password: 'changeme',
           role: Role.Admin,
         },
@@ -104,6 +107,7 @@ export class UsersController {
         example: {
           id: 4,
           username: 'wada',
+          email: 'wada@example.com',
           password: '$2b$10$UvFrY2ifg7hrWLIY8udaPe3HgApQAjquTlgJTPkt.1h8YMJATncsu',
           role: Role.Admin,
           isActive: false,
@@ -112,9 +116,13 @@ export class UsersController {
     },
   })
   async createUser(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.findOneByUsername(createUserDto.username);
-    if (user) {
-      throw new BadRequestException('User already exists');
+    const userByUsername = await this.usersService.findOneByUsername(createUserDto.username);
+    if (userByUsername) {
+      throw new BadRequestException('Username already exists');
+    }
+    const userByEmail = await this.usersService.findOneByEmail(createUserDto.email);
+    if (userByEmail) {
+      throw new BadRequestException('Email already exists');
     }
     return await this.usersService.createUser(createUserDto);
   }

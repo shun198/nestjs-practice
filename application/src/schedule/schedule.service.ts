@@ -11,7 +11,11 @@ export class ScheduleService {
     private readonly usersService: UsersService,
   ) {}
 
-  async scheduleEmail(dto: ScheduleEmailDto): Promise<string> {
+  async scheduleWelcomeEmail(dto: ScheduleEmailDto): Promise<string> {
+    return this.enqueue('send-welcome-email', dto);
+  }
+
+  private async enqueue(jobName: string, dto: ScheduleEmailDto): Promise<string> {
     const user = await this.usersService.findOneByEmail(dto.email);
     if (!user) {
       throw new NotFoundException(`Email ${dto.email} is not registered`);
@@ -22,11 +26,7 @@ export class ScheduleService {
       throw new Error('sendAt must be a future date');
     }
 
-    const job = await this.scheduleQueue.add(
-      'send-welcome-email',
-      { email: dto.email },
-      { delay },
-    );
+    const job = await this.scheduleQueue.add(jobName, { email: dto.email }, { delay });
     return `Job scheduled: ${job.id} (delay: ${Math.round(delay / 1000)}s)`;
   }
 }

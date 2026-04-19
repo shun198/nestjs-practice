@@ -1,4 +1,4 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { EmailService } from '../email/email.service';
@@ -13,15 +13,16 @@ export class ScheduleProcessor extends WorkerHost {
   }
 
   async process(job: Job): Promise<void> {
-    this.logger.log(`Processing job: ${job.name} (id: ${job.id})`);
+    await this.emailService.sendWelcomeEmail(job.data.email);
+  }
 
-    switch (job.name) {
-      case 'send-welcome-email':
-        await this.emailService.sendWelcomeEmail(job.data.email);
-        this.logger.log(`Welcome email sent to ${job.data.email}`);
-        break;
-      default:
-        this.logger.warn(`Unknown job name: ${job.name}`);
-    }
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    this.logger.log(`Email sent to ${job.data.email} (job: ${job.name})`);
+  }
+
+  @OnWorkerEvent('failed')
+  onFailed(job: Job, error: Error) {
+    this.logger.error(`Failed to send email to ${job.data.email} (job: ${job.name}): ${error.message}`);
   }
 }

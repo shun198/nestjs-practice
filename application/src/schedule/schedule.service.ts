@@ -16,7 +16,9 @@ export class ScheduleService {
     return this.enqueue('send-welcome-email', dto);
   }
 
-  async registerRepeatableWelcomeEmail(dto: RepeatableEmailDto): Promise<string> {
+  async registerRepeatableWelcomeEmail(
+    dto: RepeatableEmailDto,
+  ): Promise<string> {
     return this.enqueueRepeatable('send-welcome-email', dto);
   }
 
@@ -28,7 +30,10 @@ export class ScheduleService {
     return this.scheduleQueue.getJobSchedulers();
   }
 
-  private async enqueue(jobName: string, dto: ScheduleEmailDto): Promise<string> {
+  private async enqueue(
+    jobName: string,
+    dto: ScheduleEmailDto,
+  ): Promise<string> {
     const user = await this.usersService.findOneByEmail(dto.email);
     if (!user) {
       throw new NotFoundException(`Email ${dto.email} is not registered`);
@@ -39,11 +44,18 @@ export class ScheduleService {
       throw new Error('sendAt must be a future date');
     }
 
-    const job = await this.scheduleQueue.add(jobName, { email: dto.email }, { delay });
+    const job = await this.scheduleQueue.add(
+      jobName,
+      { email: dto.email },
+      { delay },
+    );
     return `Job scheduled: ${job.id} (delay: ${Math.round(delay / 1000)}s)`;
   }
 
-  private async enqueueRepeatable(jobName: string, dto: RepeatableEmailDto): Promise<string> {
+  private async enqueueRepeatable(
+    jobName: string,
+    dto: RepeatableEmailDto,
+  ): Promise<string> {
     const user = await this.usersService.findOneByEmail(dto.email);
     if (!user) {
       throw new NotFoundException(`Email ${dto.email} is not registered`);

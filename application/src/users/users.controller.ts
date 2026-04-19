@@ -11,7 +11,13 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBody, ApiParam, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBody,
+  ApiParam,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -58,12 +64,12 @@ export class UsersController {
     content: {
       'application/json': {
         example: {
-            id: 1,
-            username: 'john',
-            email: 'john@example.com',
-            password: 'changeme',
-            isActive: true,
-          },
+          id: 1,
+          username: 'john',
+          email: 'john@example.com',
+          password: 'changeme',
+          isActive: true,
+        },
       },
     },
   })
@@ -78,7 +84,7 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user
+    return user;
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -108,7 +114,8 @@ export class UsersController {
           id: 4,
           username: 'wada',
           email: 'wada@example.com',
-          password: '$2b$10$UvFrY2ifg7hrWLIY8udaPe3HgApQAjquTlgJTPkt.1h8YMJATncsu',
+          password:
+            '$2b$10$UvFrY2ifg7hrWLIY8udaPe3HgApQAjquTlgJTPkt.1h8YMJATncsu',
           role: Role.Admin,
           isActive: false,
         },
@@ -116,11 +123,15 @@ export class UsersController {
     },
   })
   async createUser(@Body() createUserDto: CreateUserDto) {
-    const userByUsername = await this.usersService.findOneByUsername(createUserDto.username);
+    const userByUsername = await this.usersService.findOneByUsername(
+      createUserDto.username,
+    );
     if (userByUsername) {
       throw new BadRequestException('Username already exists');
     }
-    const userByEmail = await this.usersService.findOneByEmail(createUserDto.email);
+    const userByEmail = await this.usersService.findOneByEmail(
+      createUserDto.email,
+    );
     if (userByEmail) {
       throw new BadRequestException('Email already exists');
     }

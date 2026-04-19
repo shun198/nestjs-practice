@@ -23,6 +23,8 @@ export class ScheduleProcessor extends WorkerHost {
 
   @OnWorkerEvent('failed')
   onFailed(job: Job, error: Error) {
-    this.logger.error(`Failed to send email to ${job.data.email} (job: ${job.name}): ${error.message}`);
+    this.logger.error(
+      `Failed to send email to ${job.data.email} (job: ${job.name}): ${error.message}`,
+    );
   }
 }

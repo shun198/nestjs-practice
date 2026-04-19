@@ -37,7 +37,7 @@ export class AuthController {
       'application/json': {
         example: [
           {
-            access_token: "token_string",
+            access_token: 'token_string',
           },
         ],
       },
@@ -55,7 +55,7 @@ export class AuthController {
       'application/json': {
         example: [
           {
-            username: "john",
+            username: 'john',
             userId: 1,
           },
         ],

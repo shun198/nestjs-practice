@@ -18,6 +18,46 @@
             "skipFiles": [
                 "<node_internals>/**"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Unit Tests",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "test",
+                "--",
+                "--runInBand"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}/application",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest E2E Tests",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "test:e2e",
+                "--",
+                "--runInBand"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}/application",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }

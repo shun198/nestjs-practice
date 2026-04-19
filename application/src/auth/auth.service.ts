@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   private readonly dummyHash = bcrypt.hashSync('dummy', 10);
@@ -16,20 +16,23 @@ export class AuthService {
     const user = await this.usersService.findOneByUsername(username);
     const isPasswordValid = await bcrypt.compare(
       pass,
-      user?.password ?? this.dummyHash
+      user?.password ?? this.dummyHash,
     );
     if (!user || !isPasswordValid) {
       return null;
     }
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 
   async login(user: any) {
-    const payload = { username: user.username, userId: user.id, role: user.role };
+    const payload = {
+      username: user.username,
+      userId: user.id,
+      role: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 }
-

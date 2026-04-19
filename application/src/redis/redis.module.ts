@@ -13,7 +13,12 @@ import { REDIS } from './redis.constants';
           host: configService.get<string>('REDIS_HOST'),
           port: configService.get<number>('REDIS_PORT'),
         });
-        client.set('key', 100, 'EX', configService.get<number>('REDIS_CACHE_EXPIRE'));
+        client.set(
+          'key',
+          100,
+          'EX',
+          configService.get<number>('REDIS_CACHE_EXPIRE'),
+        );
         return client;
       },
       inject: [ConfigService],

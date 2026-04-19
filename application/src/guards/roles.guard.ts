@@ -19,12 +19,14 @@ export class RolesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
     if (!user || !user.role) {
-        return false;
+      return false;
     }
 
     if (user.role === Role.Admin) {
       // Admin は Admin と General の両方を許可
-      return requiredRoles.some((role) => role === Role.Admin || role === Role.General);
+      return requiredRoles.some(
+        (role) => role === Role.Admin || role === Role.General,
+      );
     } else if (user.role === Role.General) {
       // General は General のみ許可
       return requiredRoles.includes(Role.General);

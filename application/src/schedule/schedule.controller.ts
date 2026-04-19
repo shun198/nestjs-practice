@@ -12,8 +12,6 @@ const repeatableEmailExample = { email: 'john@example.com', cronPattern: '0 0 * 
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
-  // ── 1回限りの遅延送信 ──────────────────────────────
-
   @HttpCode(HttpStatus.CREATED)
   @Post('email/welcome')
   @ApiBody({ type: ScheduleEmailDto, examples: { example: { value: scheduleEmailExample } } })
@@ -22,8 +20,6 @@ export class ScheduleController {
   async scheduleWelcomeEmail(@Body() dto: ScheduleEmailDto): Promise<string> {
     return this.scheduleService.scheduleWelcomeEmail(dto);
   }
-
-  // ── cron繰り返し送信 ────────────────────────────────
 
   @HttpCode(HttpStatus.CREATED)
   @Post('email/welcome/repeatable')

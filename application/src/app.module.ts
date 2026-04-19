@@ -8,11 +8,12 @@ import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { RedisModule } from './redis/redis.module';
-import { ElasticSearchModule } from './es/es.module';
+import { ElasticSearchModule } from './elasticsearch/elasticsearch.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '../.env'] }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -22,6 +23,12 @@ import { ElasticSearchModule } from './es/es.module';
       database: 'postgres',
       entities: [User],
       synchronize: true,
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     AuthModule,
     UsersModule,

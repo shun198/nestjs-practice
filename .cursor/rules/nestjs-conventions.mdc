@@ -1,0 +1,102 @@
+---
+description: NestJS プロジェクトのコーディング規約・アーキテクチャパターン・注意点
+globs: application/src/**/*.ts
+alwaysApply: false
+---
+
+# NestJS プロジェクト規約
+
+## ディレクトリ構成
+
+```
+src/
+  app.module.ts          # ルートモジュール
+  main.ts                # 起動処理（Express, Swagger /api/docs, Helmet, CORS, ポート 8000）
+  entity/                # TypeORM エンティティ（モジュールごとではなく共通管理）
+  dto/                   # DTO（モジュールごとではなく共通管理）
+  guards/                # ガード + Passport ストラテジー（jwt.strategy.ts, local.strategy.ts）
+  middleware/            # NestJS ミドルウェア
+  auth/                  # AuthModule: JWT + ローカル認証
+  users/                 # UsersModule
+  email/                 # EmailModule（Handlebars テンプレート）
+  redis/                 # RedisModule（ioredis カスタムプロバイダー、REDIS トークン）
+  elasticsearch/         # ElasticSearchModule
+  scripts/               # スタンドアロンスクリプト（例: seed.ts）
+```
+
+## 命名規則
+
+- ファイル名: **kebab-case**（`jwt-auth.guard.ts`, `create-user.dto.ts`）
+- ルート: 必ず **`api/`** プレフィックスを付ける（例: `api/users`, `api/auth`）
+- Swagger ドキュメント: `api/docs`
+
+## 環境変数 / 設定
+
+- `.env` は **プロジェクトルート**（`application/` の1つ上）に置く
+- 環境変数の読み取りには必ず `ConfigService` を使う。モジュールロード時に `process.env` を直接参照しない
+
+```typescript
+// ❌ NG — ConfigModule が .env を読み込む前に評価される
+export const jwtConstants = { secret: process.env.SECRET_KEY };
+
+// ✅ OK — DI により実行時に取得する
+constructor(private configService: ConfigService) {
+  const secret = this.configService.get<string>('SECRET_KEY');
+}
+```
+
+- `ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '../.env'] })` は `AppModule` で設定済み。非同期登録で `ConfigService` を使う場合、フィーチャーモジュールで `ConfigModule` を再 import する必要はない
+
+## 認証パターン
+
+- `LocalStrategy` → `LocalAuthGuard` → `POST /api/auth/login`
+- `JwtStrategy` → `JwtAuthGuard` → 認証が必要なすべてのルート
+- ロールベースアクセス制御: `@Roles(Role.Admin)` デコレーター + `RolesGuard`（`JwtAuthGuard` と組み合わせる）
+
+```typescript
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin)
+@Post()
+create(@Body() dto: CreateUserDto) { ... }
+```
+
+## HTTP ステータスコード
+
+**必ず `HttpStatus` enum を使うこと。数値リテラルは禁止。**
+
+```typescript
+// ❌ NG
+@HttpCode(200)
+@ApiResponse({ status: 201, description: '...' })
+
+// ✅ OK
+import { HttpCode, HttpStatus } from '@nestjs/common';
+
+@HttpCode(HttpStatus.OK)
+@ApiResponse({ status: HttpStatus.CREATED, description: '...' })
+```
+
+`HttpStatus` は `@nestjs/common` から import する。
+
+## Swagger
+
+コントローラーには必ずアノテーションを付ける:
+
+```typescript
+@ApiTags('users')
+@ApiBearerAuth()
+@ApiResponse({ status: HttpStatus.OK, description: '...' })
+```
+
+## TypeORM
+
+- `synchronize: true` は **開発環境専用** — 本番環境では使用しない
+- エンティティは `src/entity/` に置き、`TypeOrmModule.forRoot` でグローバル登録する
+- フィーチャーモジュールでは `TypeOrmModule.forFeature([Entity])` を使う
+
+## よくある落とし穴
+
+- **`EmailService` が `EmailModule` と `AppModule.providers` の両方に登録されている** — プロバイダーの二重登録は避ける
+- **BullMQ のキュー `audio` は登録済みだが `@Processor` がない** — キューを使う前にプロセッサーを追加する
+- **`kafkajs` と `@fastify/csrf-protection` はインストール済みだが未使用** — アプリは Fastify ではなく Express を使用している
+- **グローバル `ValidationPipe` が未設定** — 本番環境で `class-validator` を使う場合は `main.ts` に追加する

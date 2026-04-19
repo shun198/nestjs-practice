@@ -30,6 +30,9 @@ import { BullModule } from '@nestjs/bullmq';
         port: 6379,
       },
     }),
+    BullModule.registerQueue({
+      name: 'audio',
+    }),
     AuthModule,
     UsersModule,
     EmailModule,

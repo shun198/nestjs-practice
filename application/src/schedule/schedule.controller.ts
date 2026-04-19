@@ -44,7 +44,7 @@ export class ScheduleController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('email/repeatable/:id')
-  @ApiParam({ name: 'id', description: '定期ジョブのID（一覧取得APIの id フィールド）' })
+  @ApiParam({ name: 'id', description: '定期ジョブのID (一覧取得APIの id フィールド参照)' })
   @ApiResponse({ status: HttpStatus.NO_CONTENT, description: '定期ジョブを削除しました' })
   async cancelRepeatableEmail(@Param('id') id: string): Promise<void> {
     await this.scheduleService.cancelRepeatableEmail(id);
